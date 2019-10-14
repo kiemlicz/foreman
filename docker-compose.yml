@@ -20,7 +20,8 @@ services:
       - db:/var/lib/postgresql/data
 
   app: &app_base
-    image: quay.io/foreman/foreman:develop
+#    image: quay.io/foreman/foreman:develop
+    image: foreman:latest
     command: bundle exec bin/rails server -b 0.0.0.0
     build:
       context: .
@@ -36,6 +37,7 @@ services:
     links:
       - db
       - redis
+#      - proxy
     ports:
       - "${MY_DOCKER_IP:-127.0.0.1}:3000:3000"
       - "${MY_DOCKER_IP:-127.0.0.1}:5910-5930:5910-5930"
@@ -55,6 +57,24 @@ services:
       test: "ps ax | grep -v grep | grep dynflow_executor"
       interval: 1m
       start_period: 1m
+
+#  proxy:
+#    image: "foreman-proxy:latest"
+# #   command: bundle exec bin/rails server -b 0.0.0.0
+#    build:
+#      context: .
+#    environment: []
+#    hostname: foreman-proxy.example.com
+#    links:
+#      - db
+#      - redis
+#    ports:
+#      - "${MY_DOCKER_IP:-127.0.0.1}:8000:8000"
+#    restart: always
+#    healthcheck:
+#      test: ["CMD-SHELL", "nc -z 127.0.0.1 3000 || exit 1"]
+#      interval: 5m
+#      start_period: 1m
 
   redis:
     image: redis
